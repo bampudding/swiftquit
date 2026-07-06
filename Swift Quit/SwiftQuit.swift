@@ -136,8 +136,9 @@ class SwiftQuit {
     }
     
     class func terminateApplication(app:NSRunningApplication) {
+        let pid = app.processIdentifier
         print("Terminated " + (app.localizedName ?? "<no_name>"))
-        app.terminate()
+        Darwin.kill(pid, SIGKILL)
     }
     
     class func hideMenu(){

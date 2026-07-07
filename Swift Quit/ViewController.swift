@@ -50,11 +50,10 @@ class ViewController: NSViewController, NSTableViewDelegate, NSWindowDelegate {
 
         excludeBehaviourLabelOutlet.textColor = .labelColor
 
-        if(swiftQuitSettings["excludeBehaviour"] == "excludeApps"){
-            excludeBehaviourPopupOutlet.title = "All Apps Except The Following"
-        }
-        else{
-            excludeBehaviourPopupOutlet.title = "The Following Apps"
+        if swiftQuitSettings["excludeBehaviour"] == "excludeApps" {
+            excludeBehaviourPopupOutlet.selectItem(withTitle: "All Apps Except The Following")
+        } else {
+            excludeBehaviourPopupOutlet.selectItem(withTitle: "The Following Apps")
         }
 
         excludedAppsTableView.dataSource = self
@@ -105,7 +104,11 @@ class ViewController: NSViewController, NSTableViewDelegate, NSWindowDelegate {
             disableMenubarAlert.informativeText = "If you need to access it, simply launch the app again to display the settings page."
             disableMenubarAlert.alertStyle = .informational
             disableMenubarAlert.addButton(withTitle: "OK")
-            disableMenubarAlert.beginSheetModal(for: self.view.window!, completionHandler: nil)
+            if let window = self.view.window {
+                disableMenubarAlert.beginSheetModal(for: window, completionHandler: nil)
+            } else {
+                disableMenubarAlert.runModal()
+            }
 
         }
         
@@ -122,12 +125,9 @@ class ViewController: NSViewController, NSTableViewDelegate, NSWindowDelegate {
     }
     
     @IBAction func changeExcludeBehaviour(_ sender: Any) {
-        
-        if(excludeBehaviourPopupOutlet.title == "All Apps Except The Following"){
+        if excludeBehaviourPopupOutlet.indexOfSelectedItem == 0 {
             SwiftQuit.enableExcludedApps()
-        }
-        else{
-            swiftQuitSettings["excludeBehaviour"] = "includeApps"
+        } else {
             SwiftQuit.enableIncludedApps()
         }
     }

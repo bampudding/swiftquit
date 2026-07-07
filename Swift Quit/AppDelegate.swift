@@ -66,7 +66,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationDidBecomeActive(_ aNotification: Notification) {
-        openSettings();
+        if let window = settingsWindow.window, !window.isVisible {
+            openSettings()
+        }
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {

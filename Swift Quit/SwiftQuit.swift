@@ -99,18 +99,15 @@ class SwiftQuit {
             print("Application with PID \(pid) has no bundle URL")
             return
         }
-        var applicationName = bundleURL.absoluteString
+        let applicationName = bundleURL.path(percentEncoded: false)
 
         print(app.isFinishedLaunching);
         
         if(app.isFinishedLaunching){
-            applicationName.remove(at: applicationName.index(before: applicationName.endIndex))
-            applicationName = applicationName.replacingOccurrences(of: "file://", with: "")
-            applicationName = applicationName.replacingOccurrences(of: "%20", with: " ")
             
             if(myAppPid != pid){
                 
-                let excludedServices:[String] = ["/System/Library/CoreServices/Spotlight.app","/System/Library/CoreServices/Finder.app","/System/Library/CoreServices/NotificationCenter.app"];
+                let excludedServices:[String] = ["/System/Library/CoreServices/Spotlight.app","/System/Library/CoreServices/Finder.app","/System/Library/CoreServices/NotificationCenter.app","/System/Library/CoreServices/loginwindow.app","/System/Library/CoreServices/ControlCenter.app","/System/Library/CoreServices/SystemUIServer.app"];
                 
                 if(!excludedServices.contains(applicationName)){
                     if (shouldCloseApplication(applicationName: applicationName)) {
@@ -136,9 +133,10 @@ class SwiftQuit {
     }
     
     class func terminateApplication(app:NSRunningApplication) {
-        let pid = app.processIdentifier
         print("Terminated " + (app.localizedName ?? "<no_name>"))
-        Darwin.kill(pid, SIGKILL)
+        if !app.terminate() {
+            app.forceTerminate()
+        }
     }
     
     class func hideMenu(){

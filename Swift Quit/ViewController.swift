@@ -37,7 +37,8 @@ class ViewController: NSViewController, NSTableViewDelegate, NSWindowDelegate {
     
     func setupViews() {
         print("launch at login:")
-        print(launchAtLogin)
+        print(launchAtLogin.isEnabled)
+        launchAtLoginSwitch.state = launchAtLogin.isEnabled ? .on : .off
 
         if(swiftQuitSettings["menubarIconEnabled"] == "true"){
             displayMenubarIcon.state = NSControl.StateValue.on

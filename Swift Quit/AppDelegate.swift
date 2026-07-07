@@ -9,6 +9,7 @@ import Cocoa
 import AXSwift
 import Swindler
 import PromiseKit
+import LaunchAtLogin
 
 var userDefaults = UserDefaults.standard
 var swiftQuitSettings = SwiftQuit.getSettings()
@@ -24,7 +25,14 @@ var lastLaunchedAppPid : Int32 = 0;
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        
+
+        LaunchAtLogin.migrateIfNeeded()
+
+        // Sync saved setting to actual registration
+        if swiftQuitSettings["launchAtLogin"] == "true", !LaunchAtLogin.isEnabled {
+            LaunchAtLogin.isEnabled = true
+        }
+
         guard AXSwift.checkIsProcessTrusted(prompt: true) else {
             print("Not trusted as an AX process; please authorize and re-launch")
             NSApp.terminate(self)
